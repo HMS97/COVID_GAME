@@ -58,6 +58,11 @@ class Drawing:
         render = self.font.render(display_fps, 0, DARKORANGE)
         self.sc.blit(render, FPS_POS)
 
+    def left_shot(self, player):
+        display_shot = str(int(player.left_shoots))
+        render = self.font.render(display_shot, 0, DARKORANGE)
+        self.sc.blit(render, LEFT_SHOT_POS)
+
     def mini_map(self, player):
         self.sc_map.fill(BLACK)
         map_x, map_y = player.x // MAP_SCALE, player.y // MAP_SCALE

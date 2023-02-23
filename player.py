@@ -15,12 +15,16 @@ class Player:
         # weapon
         self.shot = False
         self.shot_numbers_limtation = 7
-        self.shoot_conts = 0
+        self.left_ammo = 0
         self.vaccinated = False
         
     @property
     def pos(self):
         return (self.x, self.y)
+
+    @property
+    def left_shoots(self):
+        return self.left_ammo
 
     @property
     def collision_list(self):
@@ -94,12 +98,15 @@ class Player:
                 exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1 and not self.shot:
-                    if self.vaccinated == True and self.shoot_conts < self.shot_numbers_limtation:
-                        self.shoot_conts += 1
+                    if self.vaccinated == True and self.left_ammo>0:
+                        self.left_ammo -=   1
                         self.shot = True
+                        if self.left_ammo == 0:
+                            self.vaccinated = False
+                            self.shot = False
                     else:
                         self.shot = False
-                        
+
     def mouse_control(self):
         if pygame.mouse.get_focused():
             difference = pygame.mouse.get_pos()[0] - HALF_WIDTH

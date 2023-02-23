@@ -104,13 +104,14 @@ class Interaction:
                         exit()
                 self.drawing.win()
 
-    def check_lose(self):
-        if self.player.is_dead:
-            pygame.mixer.music.stop()
-            pygame.mixer.music.load('sound/lose.mp3')
-            pygame.mixer.music.play()
-            while True:
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        exit()
-                self.drawing.lose()
+    def check_vaccination(self):
+
+        for obj in self.sprites.list_of_objects :
+            if obj.flag == 'vaccine':
+
+                if (self.player.vaccinated == False ) and (0<= obj.distance_to_sprite < 20):
+                    self.player.vaccinated = True
+                    self.player.left_ammo = 7
+
+                    obj.delete = True
+                    break

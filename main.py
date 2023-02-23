@@ -24,13 +24,17 @@ while True:
     drawing.background(player.angle)
     walls, wall_shot = ray_casting_walls(player, drawing.textures)
     drawing.world(walls + [obj.object_locate(player) for obj in sprites.list_of_objects])
+    # print(walls + [obj.object_locate(player) for obj in sprites.list_of_objects if obj.flag == 'vaccine'])
     drawing.fps(clock)
     drawing.mini_map(player)
     drawing.player_weapon([wall_shot, sprites.sprite_shot])
+    drawing.left_shot(player)
 
     interaction.interaction_objects()
     interaction.npc_action()
     interaction.clear_world()
+    interaction.check_vaccination()
+
     # interaction.check_win()
     # interaction.check_lose()
 

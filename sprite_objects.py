@@ -68,14 +68,16 @@ class Sprites:
                 'shift': 0.7,
                 'scale': (0.6, 0.6),
                 'side': 30,
-                'animation': [],
+                 'obj_action': deque(
+                    [pygame.image.load(f'sprites/vaccine/anim/{i}.png').convert_alpha() for i in range(5)]),
                 'death_animation': [],
                 'is_dead': 'immortal',
+                'animation': [],
                 'dead_shift': 1.8,
-                'animation_dist': 1800,
-                'animation_speed': 5,
+                'animation_dist': 0,
+                'animation_speed': 2,
                 'blocked': None,
-                'flag': 'decor',
+                'flag': 'vaccine',
                 'obj_action': []
             },
 
@@ -306,3 +308,9 @@ class SpriteObject:
             self.x -= 3
             if abs(self.x - self.door_prev_pos) > TILE:
                 self.delete = True
+
+    def get_vaccinated(self):
+        # if self.is infected:
+            self.is_infected = False
+            self.is_vaccinated = True  
+
