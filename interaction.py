@@ -94,22 +94,43 @@ class Interaction:
         pygame.mixer.music.play(10)
 
     def check_win(self):
-        if not len([obj for obj in self.sprites.list_of_objects if obj.flag == 'adversary' and not obj.is_dead]):
+        
+        if not len([obj for obj in self.sprites.list_of_objects if (obj.flag == 'adversary')  and (len(obj.death_animation) )]):
+        # if 1:
+            pygame.mouse.set_visible(True)
+ 
             pygame.mixer.music.stop()
             pygame.mixer.music.load('sound/win.mp3')
             pygame.mixer.music.play()
+            #delay for several seconds
             while True:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         exit()
-                self.drawing.win()
+                if self.drawing.win():
+                    return True
 
+    def check_lost(self):
+        for obj in self.sprites.list_of_objects :
+            if obj.flag == 'adversary' :
+
+                if  (0<= obj.distance_to_sprite < 100):
+                    pygame.mouse.set_visible(True)
+
+                    while True:
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                exit()
+                        if self.drawing.lost():
+                            return True
     def check_vaccination(self):
 
         for obj in self.sprites.list_of_objects :
             if obj.flag == 'vaccine':
 
-                if (self.player.vaccinated == False ) and (0<= obj.distance_to_sprite < 20):
+                # if (self.player.vaccinated == False ) and (0<= obj.distance_to_sprite < 10):
+                if (self.player.vaccinated == False ) and (0<= obj.distance_to_sprite <= 20):
+
                     self.player.vaccinated = True
                     self.player.left_ammo = 7
 

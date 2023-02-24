@@ -44,7 +44,7 @@ class Sprites:
                 'flag': 'decor',
                 'obj_action': []
             },
-            'sprite_flame': {
+                'sprite_flame': {
                 'sprite': pygame.image.load('sprites/flame/base/0.png').convert_alpha(),
                 'viewing_angles': None,
                 'shift': 0.7,
@@ -55,8 +55,8 @@ class Sprites:
                 'death_animation': [],
                 'is_dead': 'immortal',
                 'dead_shift': 1.8,
-                'animation_dist': 0,
-                'animation_speed': 0,
+                'animation_dist': 1800,
+                'animation_speed': 5,
                 'blocked': None,
                 'flag': 'decor',
                 'obj_action': []
@@ -68,14 +68,13 @@ class Sprites:
                 'shift': 0.7,
                 'scale': (0.6, 0.6),
                 'side': 30,
-                 'obj_action': deque(
+                 'animation': deque(
                     [pygame.image.load(f'sprites/vaccine/anim/{i}.png').convert_alpha() for i in range(5)]),
                 'death_animation': [],
                 'is_dead': 'immortal',
-                'animation': [],
                 'dead_shift': 1.8,
-                'animation_dist': 0,
-                'animation_speed': 2,
+                'animation_dist': 500,
+                'animation_speed': 1.5,
                 'blocked': None,
                 'flag': 'vaccine',
                 'obj_action': []
@@ -101,6 +100,26 @@ class Sprites:
                 'obj_action': deque(
                     [pygame.image.load(f'sprites/covid/anim/{i}.png').convert_alpha() for i in range(9)]),
             },
+
+            'covid_protector_monster': {
+                'sprite': [pygame.image.load(f'sprites/covid_protector_monster/base/{i}.png').convert_alpha() for i in range(8)],
+                'viewing_angles': True,
+                'shift': 0.0,
+                'scale': (1.1, 1.1),
+                'side': 50,
+                'animation': [],
+                'death_animation': deque([pygame.image.load(f'sprites/covid_protector_monster/death/{i}.png')
+                                           .convert_alpha() for i in range(11)]),
+                'is_dead': None,
+                'dead_shift': 0.6,
+                'animation_dist': None,
+                'animation_speed': 10,
+                'blocked': True,
+                'flag': 'adversary',
+                'obj_action': deque(
+                    [pygame.image.load(f'sprites/covid_protector_monster/action/{i}.png').convert_alpha() for i in range(6)]),
+            },
+
             'sprite_door_v': {
                 'sprite': [pygame.image.load(f'sprites/doors/door_v/{i}.png').convert_alpha() for i in range(16)],
                 'viewing_angles': True,
@@ -140,11 +159,16 @@ class Sprites:
             SpriteObject(self.sprite_parameters['sprite_barrel'], (7.1, 2.1)),
             SpriteObject(self.sprite_parameters['sprite_barrel'], (5.9, 2.1)),
             SpriteObject(self.sprite_parameters['sprite_pin'], (8.7, 2.5)),
-            SpriteObject(self.sprite_parameters['covid'], (7, 4)),
+            SpriteObject(self.sprite_parameters['covid'], (9, 4)),
+            SpriteObject(self.sprite_parameters['covid_protector_monster'], (10, 4)),
+
             SpriteObject(self.sprite_parameters['sprite_flame'], (8.6, 5.6)),
             SpriteObject(self.sprite_parameters['sprite_door_v'], (3.5, 3.5)),
             SpriteObject(self.sprite_parameters['sprite_door_h'], (1.5, 4.5)),
+
             SpriteObject(self.sprite_parameters['sprite_vaccine'], (7.5, 4.5)),
+            SpriteObject(self.sprite_parameters['sprite_vaccine'], (9, 4.5)),
+            SpriteObject(self.sprite_parameters['sprite_vaccine'], (11, 4.5)),
 
 
         ]
@@ -184,6 +208,7 @@ class SpriteObject:
         self.side = parameters['side']
         self.dead_animation_count = 0
         self.animation_count = 0
+        self.dead_animation_finished = False
         self.npc_action_trigger = False
         self.door_open_trigger = False
         self.door_prev_pos = self.y if self.flag == 'door_h' else self.x
@@ -211,7 +236,7 @@ class SpriteObject:
 
         dx, dy = self.x - player.x, self.y - player.y
         self.distance_to_sprite = math.sqrt(dx ** 2 + dy ** 2)
-
+       
         self.theta = math.atan2(dy, dx)
         gamma = self.theta - player.angle
         if dx > 0 and 180 <= math.degrees(player.angle) <= 360 or dx < 0 and dy < 0:
@@ -220,7 +245,8 @@ class SpriteObject:
 
         delta_rays = int(gamma / DELTA_ANGLE)
         self.current_ray = CENTER_RAY + delta_rays
-        if self.flag not in {'door_h', 'door_v'}:
+        if self.flag not in {'door_h', 'door_v' , 'vaccine' , 'adversary'}:
+            # if (self.flag != 'vaccine' or 'adversary' ):
             self.distance_to_sprite *= math.cos(HALF_FOV - self.current_ray * DELTA_ANGLE)
 
         fake_ray = self.current_ray + FAKE_RAYS
@@ -288,6 +314,8 @@ class SpriteObject:
             else:
                 self.dead_sprite = self.death_animation.popleft()
                 self.dead_animation_count = 0
+        # else:                 
+        #     dead_animation_finished = True         
         return self.dead_sprite
 
     def npc_in_action(self):
