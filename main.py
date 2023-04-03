@@ -3,7 +3,8 @@ from sprite_objects import *
 from ray_casting import ray_casting_walls
 from drawing import Drawing
 from interaction import Interaction
-
+from map import UPDATE_MAP, world_map, mini_map , collision_walls
+from settings import MAP_LEVEL
 
 
 pygame.init()
@@ -17,6 +18,7 @@ interaction = Interaction(player, sprites, drawing)
 drawing.menu()
 pygame.mouse.set_visible(False)
 interaction.play_music()
+# return sc, sc_map, sprites, clock, player, drawing, interaction
 
 while True:
 
@@ -34,8 +36,20 @@ while True:
     interaction.npc_action()
     interaction.clear_world()
     interaction.check_vaccination()
-    # print(interaction.check_win())
-    if interaction.check_win() or interaction.check_lost():
+
+
+    status = interaction.check_win(MAP_LEVEL)
+    if status and MAP_LEVEL==1: MAP_LEVEL = 2
+    elif status and MAP_LEVEL==2: MAP_LEVEL = 1
+   
+    if status or interaction.check_lost():
+        print(status,MAP_LEVEL)
+
+     
+
+        world_map, mini_map , collision_walls = UPDATE_MAP(MAP_LEVEL, world_map, mini_map , collision_walls ) 
+        sc = pygame.display.set_mode((WIDTH, HEIGHT))
+        sc_map = pygame.Surface(MINIMAP_RES)
         sprites = Sprites()
         clock = pygame.time.Clock()
         player = Player(sprites)

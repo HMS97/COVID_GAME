@@ -1,4 +1,5 @@
 from settings import *
+from settings import MAP_LEVEL
 from map import world_map
 from ray_casting import mapping
 import math
@@ -60,10 +61,13 @@ class Interaction:
                             obj.is_dead = True
                             obj.blocked = None
                             self.drawing.shot_animation_trigger = False
-                    if obj.flag in {'door_h', 'door_v'} and obj.distance_to_sprite < TILE:
-                        obj.door_open_trigger = True
-                        obj.blocked = None
-                    break
+        for obj in sorted(self.sprites.list_of_objects, key=lambda obj: obj.distance_to_sprite):
+            # print(obj.flag, obj.distance_to_sprite)
+            if obj.flag in {'door_h', 'door_v'} and ( 0<= abs( obj.distance_to_sprite) < 100):
+                obj.door_open_trigger = True
+                obj.blocked = None
+                # if obj.flag == 'door_h':
+            break
 
     def npc_action(self):
         for obj in self.sprites.list_of_objects:
@@ -93,10 +97,10 @@ class Interaction:
         pygame.mixer.music.load('sound/theme.mp3')
         pygame.mixer.music.play(10)
 
-    def check_win(self):
-        
+    def check_win(self,MAP_LEVEL):
+
+
         if not len([obj for obj in self.sprites.list_of_objects if (obj.flag == 'adversary')  and (len(obj.death_animation) )]):
-        # if 1:
             pygame.mouse.set_visible(True)
  
             pygame.mixer.music.stop()
@@ -107,8 +111,24 @@ class Interaction:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         exit()
-                if self.drawing.win():
+                if self.drawing.win(MAP_LEVEL):
                     return True
+        elif MAP_LEVEL == 2 :
+            for obj in [obj for obj in self.sprites.list_of_objects  if (obj.flag  in {'door_h', 'door_v'})  ]:
+                if obj.flag in {'door_h', 'door_v'} and ( 0<= abs( obj.distance_to_sprite) < 100):
+
+                    pygame.mouse.set_visible(True)
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.load('sound/win.mp3')
+                    pygame.mixer.music.play()
+                    #delay for several seconds
+                    while True:
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                exit()
+                        if self.drawing.win(MAP_LEVEL):
+                            MAP_LEVEL = 1
+                            return True
 
     def check_lost(self):
         for obj in self.sprites.list_of_objects :

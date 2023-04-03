@@ -5,6 +5,7 @@ from map import mini_map
 from collections import deque
 from random import  randrange
 import sys
+from settings import MAP_LEVEL
 
 class Drawing:
     def __init__(self, sc, sc_map, player, clock):
@@ -106,21 +107,37 @@ class Drawing:
             self.sfx_length_count += 1
             self.sfx.rotate(-1)
 
-    def win(self):
+    def win(self,MAP_LEVEL):
+
+
         render = self.font_win.render('YOU WIN!!!', 1, (randrange(40, 120), 0, 0))
         rect = pygame.Rect(0, 0, 1000, 300)
-        rect.center = HALF_WIDTH, HALF_HEIGHT-200
+        rect.center = HALF_WIDTH, HALF_HEIGHT-250
         pygame.draw.rect(self.sc, BLACK, rect, border_radius=50)
         self.sc.blit(render, (rect.centerx - 430, rect.centery - 140))
         x = 0
         button_font = pygame.font.Font('font/font.ttf', 72)
         label_font = pygame.font.Font('font/font1.otf', 400)
+
+        if MAP_LEVEL == 1:
+
+            next_level = button_font.render('Next level', 1, pygame.Color('lightgray'))
+            button_next = pygame.Rect(0, 0, 400, 150)
+            button_next.center = HALF_WIDTH, HALF_HEIGHT
+
         start = button_font.render('AGAIN', 1, pygame.Color('lightgray'))
         button_start = pygame.Rect(0, 0, 400, 150)
-        button_start.center = HALF_WIDTH, HALF_HEIGHT
+        button_start.center = HALF_WIDTH, HALF_HEIGHT + 140
+
         exit = button_font.render('EXIT', 1, pygame.Color('lightgray'))
         button_exit = pygame.Rect(0, 0, 400, 150)
-        button_exit.center = HALF_WIDTH, HALF_HEIGHT + 200
+        button_exit.center = HALF_WIDTH, HALF_HEIGHT + 330
+
+        if MAP_LEVEL == 1:
+
+            pygame.draw.rect(self.sc, BLACK, button_next, border_radius=25, width=10)
+            self.sc.blit(next_level, (button_next.centerx - 180, button_next.centery - 70))
+
         pygame.draw.rect(self.sc, BLACK, button_start, border_radius=25, width=10)
         self.sc.blit(start, (button_start.centerx - 130, button_start.centery - 70))
 
@@ -131,12 +148,25 @@ class Drawing:
         self.clock.tick(15)
         mouse_pos = pygame.mouse.get_pos()
         mouse_click = pygame.mouse.get_pressed()
+
+
+        if MAP_LEVEL == 1:
+            if button_next.collidepoint(mouse_pos):
+                pygame.draw.rect(self.sc, BLACK, button_next, border_radius=25)
+                self.sc.blit(next_level, (button_next.centerx - 180, button_next.centery - 70))
+                if mouse_click[0]:
+                    self.menu_trigger = False
+                    MAP_LEVEL = MAP_LEVEL + 1
+                    print('MAP_LEVEL', MAP_LEVEL)
+                    return True
+
+
         if button_start.collidepoint(mouse_pos):
             pygame.draw.rect(self.sc, BLACK, button_start, border_radius=25)
             self.sc.blit(start, (button_start.centerx - 130, button_start.centery - 70))
             if mouse_click[0]:
+                # MAP_LEVEL = 1
                 self.menu_trigger = False
-                print('waht happend')
                 return True
 
            
@@ -158,6 +188,7 @@ class Drawing:
         x = 0
         button_font = pygame.font.Font('font/font.ttf', 72)
         label_font = pygame.font.Font('font/font1.otf', 400)
+
         start = button_font.render('AGAIN', 1, pygame.Color('lightgray'))
         button_start = pygame.Rect(0, 0, 400, 150)
         button_start.center = HALF_WIDTH, HALF_HEIGHT
@@ -179,7 +210,6 @@ class Drawing:
             self.sc.blit(start, (button_start.centerx - 130, button_start.centery - 70))
             if mouse_click[0]:
                 self.menu_trigger = False
-                print('waht happend')
                 return True
 
            

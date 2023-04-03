@@ -11,6 +11,7 @@ FPS = 60
 TILE = 100
 FPS_POS = (WIDTH - 65, 5)
 LEFT_SHOT_POS = (WIDTH - 200, 35)
+MAP_LEVEL = 1 
 
 
 # minimap settings
