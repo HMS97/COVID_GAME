@@ -110,11 +110,11 @@ class Drawing:
     def win(self,MAP_LEVEL):
 
 
-        render = self.font_win.render('YOU WIN!!!', 1, (randrange(40, 120), 0, 0))
-        rect = pygame.Rect(0, 0, 1000, 300)
+        render = self.font_win.render('YOU WIN!!!', 1, (randrange(40, 80), 0, 0))
+        rect = pygame.Rect(0, 0, 1000, 150)
         rect.center = HALF_WIDTH, HALF_HEIGHT-250
         pygame.draw.rect(self.sc, BLACK, rect, border_radius=50)
-        self.sc.blit(render, (rect.centerx - 430, rect.centery - 140))
+        self.sc.blit(render, (rect.centerx - 430, rect.centery - 80))
         x = 0
         button_font = pygame.font.Font('font/font.ttf', 72)
         label_font = pygame.font.Font('font/font1.otf', 400)
@@ -123,15 +123,15 @@ class Drawing:
 
             next_level = button_font.render('Next level', 1, pygame.Color('lightgray'))
             button_next = pygame.Rect(0, 0, 400, 150)
-            button_next.center = HALF_WIDTH, HALF_HEIGHT
+            button_next.center = HALF_WIDTH, HALF_HEIGHT-70
 
         start = button_font.render('AGAIN', 1, pygame.Color('lightgray'))
         button_start = pygame.Rect(0, 0, 400, 150)
-        button_start.center = HALF_WIDTH, HALF_HEIGHT + 140
+        button_start.center = HALF_WIDTH, HALF_HEIGHT + 100
 
         exit = button_font.render('EXIT', 1, pygame.Color('lightgray'))
         button_exit = pygame.Rect(0, 0, 400, 150)
-        button_exit.center = HALF_WIDTH, HALF_HEIGHT + 330
+        button_exit.center = HALF_WIDTH, HALF_HEIGHT + 300
 
         if MAP_LEVEL == 1:
 
